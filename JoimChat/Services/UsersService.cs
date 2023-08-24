@@ -62,7 +62,7 @@ namespace JoimChat.Services
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            if (await _context.Users.AnyAsync())
+            if (!await _context.Users.AnyAsync())
             {
                 throw new ArgumentNullException("Users list is empty.");
             }

@@ -24,26 +24,21 @@ namespace JoimChat.Controllers
                 return BadRequest("User is null");
             }
 
-            var newUser = await _usersService.CreateUserAsync(user);
+            await _usersService.CreateUserAsync(user);
 
-            if (newUser == null)
-            {
-                return NotFound();
-            }
-
-            return CreatedAtRoute(nameof(GetUserById), new { id = newUser.UserId }, newUser);
+            return CreatedAtRoute(nameof(GetUserById), new { id = user.UserId }, user);
         }
 
-        [HttpGet("get/id/{id}")]
+        [HttpGet("get/id")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetUserById([FromRoute] int id)
+        public async Task<IActionResult> GetUserById([FromQuery] int userId)
         {
-            if (id < 0)
+            if (userId < 0)
             {
                 return BadRequest("ID cannot be < 0");
             }
-
-            var response = await _usersService.GetUserByIdAsync(id);
+            
+            var response = await _usersService.GetUserByIdAsync(userId);
 
             if (response == null)
             {
@@ -54,9 +49,9 @@ namespace JoimChat.Controllers
         }
 
 
-        [HttpGet("get/email/{email}")]
+        [HttpGet("get/email")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -73,9 +68,9 @@ namespace JoimChat.Controllers
             return Ok(response);
         }
 
-        [HttpGet("get/name/{name}")]
+        [HttpGet("get/name")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetUserByName([FromRoute] string name)
+        public async Task<IActionResult> GetUserByName([FromQuery] string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -119,6 +114,8 @@ namespace JoimChat.Controllers
 
             return Ok(response);
         }
+
+        //todo UpdateUser
 
     }
 }

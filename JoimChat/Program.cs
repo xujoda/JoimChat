@@ -1,5 +1,7 @@
 using JoimChat.Models;
+using JoimChat.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JoimChat
 {
@@ -13,8 +15,10 @@ namespace JoimChat
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<ChatDbContext>(options =>
-                options.UseNpgsql("Host=localhost;Port=5432;Database=JoimChatDB;Username=postgres;Password=joimchat"));
+                options.UseNpgsql("Host=172.17.0.1;Port=5432;Database=JoimChatDB;Username=postgres;Password=joimchat"));
 
+            
+            builder.Services.TryAddTransient<IUsersService, UsersService>();
             builder.Services.AddControllers();
 
             var app = builder.Build();
