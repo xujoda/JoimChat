@@ -19,6 +19,7 @@ namespace JoimChat
 
             
             builder.Services.TryAddTransient<IUsersService, UsersService>();
+            builder.Services.TryAddTransient<IMessagesService, MessagesService>();
             builder.Services.AddControllers();
 
             var app = builder.Build();

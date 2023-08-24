@@ -6,7 +6,7 @@ namespace JoimChat.Services
     {
         Task<User> CreateUserAsync(User user);
         Task<ResponseService> DeleteUserByIdAsync(int userId);
-        Task<ResponseService> UpdateUserAsync(User user);
+        Task<ResponseService> UpdateUserAsync(int userId, User user);
         Task<User> GetUserByIdAsync(int userId);
         Task<User> GetUserByNameAsync(string name);
         Task<User> GetUserByEmailAsync(string email);

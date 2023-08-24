@@ -82,14 +82,14 @@ namespace JoimChat.Services
             return ResponseService.Success("User had been deleted");
         }
 
-        public async Task<ResponseService> UpdateUserAsync(User user)
+        public async Task<ResponseService> UpdateUserAsync(int userId, User user)
         {
             if (user == null)
             {
                 return ResponseService.Success("User == null");
             }
 
-            var originalUser = await _context.Users.FirstOrDefaultAsync(u => user == u);
+            var originalUser = await GetUserByIdAsync(userId);
 
             if (originalUser == null)
             {

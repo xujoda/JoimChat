@@ -29,7 +29,7 @@ namespace JoimChat.Controllers
             return CreatedAtRoute(nameof(GetUserById), new { id = user.UserId }, user);
         }
 
-        [HttpGet("get/id")]
+        [HttpGet("get/userId")]
         [Produces("application/json")]
         public async Task<IActionResult> GetUserById([FromQuery] int userId)
         {
@@ -110,12 +110,20 @@ namespace JoimChat.Controllers
                 return BadRequest("UserID cannot be < 0");
             }
 
-            var response = await _usersService.DeleteUserByIdAsync(userId);
-
-            return Ok(response);
+            return Ok(await _usersService.DeleteUserByIdAsync(userId));
         }
 
-        //todo UpdateUser
+        [HttpPut("update/{userId}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdateUser([FromQuery] int userId,[FromBody] User user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await _usersService.UpdateUserAsync(userId, user));
+        }
 
     }
 }
