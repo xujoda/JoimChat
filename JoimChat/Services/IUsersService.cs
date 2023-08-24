@@ -4,12 +4,12 @@ namespace JoimChat.Services
 {
     public interface IUsersService
     {
-        Task CreateUser(User user);
-        Task DeleteUserById(int userId);
-        Task UpdateUser(User user);
-        Task<User> GetUserById(int userId);
-        Task<User> GetUserByName(string name);
-        Task<User> GetUserByEmail(string email);
-        Task<List<User>> GetAllUsers();
+        Task<User> CreateUserAsync(User user);
+        Task<ResponseService> DeleteUserByIdAsync(int userId);
+        Task<ResponseService> UpdateUserAsync(User user);
+        Task<User> GetUserByIdAsync(int userId);
+        Task<User> GetUserByNameAsync(string name);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<List<User>> GetAllUsersAsync();
     }
 }

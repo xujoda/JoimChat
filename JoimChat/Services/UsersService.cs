@@ -1,6 +1,4 @@
 ﻿using JoimChat.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace JoimChat.Services
@@ -14,51 +12,43 @@ namespace JoimChat.Services
             _context = context;
         }
 
-        public async Task CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            await _context.Users.AddAsync(user);
+            var newUser = await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+
+            return newUser.Entity;
         }
 
-        public async Task<User> GetUserById(int userId)
+        public async Task<User> GetUserByIdAsync(int userId)
         {
             if (userId < 0) 
             {
-                throw new ArgumentOutOfRangeException(nameof(userId));
+                throw new ArgumentNullException($"userID {userId}");
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
 
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
-
-            return user;
+            return user ?? throw new ArgumentNullException($"userID {userId}");
         }
 
-        public async Task<User> GetUserByName(string name)
+        public async Task<User> GetUserByNameAsync(string name)
         {
             if (name == null)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(name)}");
+                throw new ArgumentNullException($"{nameof(name)}");
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
 
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            return user;
+            return user ?? throw new ArgumentNullException($"{nameof(name)}");
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             if (email == null)
             {
@@ -67,51 +57,43 @@ namespace JoimChat.Services
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == email);
 
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(email));
-            }
-
-            return user;
+            return user ?? throw new ArgumentOutOfRangeException($"{nameof(email)}"); ;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            if (_context.Users.Count() <= 0)
+            if (await _context.Users.AnyAsync())
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Users list is empty.");
             }
 
             var users = await _context.Users.ToListAsync();
 
-            if (users == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            return users;
+            return users ?? throw new ArgumentNullException("Users list is empty.");
         }
 
-        public async Task DeleteUserById(int userId)
+        public async Task<ResponseService> DeleteUserByIdAsync(int userId)
         {
-            var user = GetUserById(userId);
+            var user = GetUserByIdAsync(userId);
 
             _context.Users.Remove(user.Result);
             await _context.SaveChangesAsync();
+
+            return ResponseService.Success("User had been deleted");
         }
 
-        public async Task UpdateUser(User user)
+        public async Task<ResponseService> UpdateUserAsync(User user)
         {
             if (user == null)
             {
-                throw new ArgumentNullException();
+                return ResponseService.Success("User == null");
             }
 
             var originalUser = await _context.Users.FirstOrDefaultAsync(u => user == u);
 
             if (originalUser == null)
             {
-                throw new ArgumentNullException();
+                return ResponseService.Error("Original user not found");
             }
 
             originalUser.SentMessages = user.SentMessages;
@@ -122,6 +104,8 @@ namespace JoimChat.Services
             originalUser.Password = user.Password;
 
             await _context.SaveChangesAsync();
+
+            return ResponseService.Success("User has been updated");
         }
     }
 }
