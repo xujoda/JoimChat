@@ -1,6 +1,7 @@
 ﻿using JoimChat.Models;
 using JoimChat.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,19 +12,27 @@ namespace JoimChat.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessagesService _messagesService;
+        private readonly IHubContext<ChatHub> _hubContext;
+
+        public MessagesController(IMessagesService messagesService, IHubContext<ChatHub> hubContext)
+        {
+            _messagesService = messagesService;
+            _hubContext = hubContext;
+        }
 
         [HttpPost("create")]
         [Produces("application/json")]
-        public async Task<IActionResult> CreateMessage([FromBody] Message message)
+        public async Task<IActionResult> CreateMessage([FromBody] MessageCreateModel messageModel)
         {
-            if (message == null)
+            if (messageModel == null)
             {
                 return BadRequest("Message is null");
             }
 
-            await _messagesService.CreateMessage(message);
+            await _messagesService.CreateMessage(messageModel);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "admin2", messageModel.MessageString);
 
-            return CreatedAtRoute(nameof(GetMessageById), new { id = message.MessageId}, message);
+            return Ok();//CreatedAtRoute(nameof(GetMessageById), new { id = message.MessageId}, message);
         }
 
         [HttpGet("get/messageId")]

@@ -113,7 +113,7 @@ namespace JoimChat.Controllers
             return Ok(await _usersService.DeleteUserByIdAsync(userId));
         }
 
-        [HttpPut("update/{userId}")]
+        [HttpPut("update")]
         [Produces("application/json")]
         public async Task<IActionResult> UpdateUser([FromQuery] int userId,[FromBody] User user)
         {

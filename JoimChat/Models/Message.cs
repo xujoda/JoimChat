@@ -5,7 +5,7 @@ namespace JoimChat.Models
 {
     public class Message
     {
-        [Key] // Указываем, что это ключ
+        [Key]
         public int MessageId { get; set; }
 
         [Required]
@@ -25,5 +25,17 @@ namespace JoimChat.Models
 
         public User Sender { get; set; }
         public User Recipient { get; set; }
+    }
+
+    public class MessageCreateModel
+    {
+        [Required]
+        public int SenderId { get; set; }
+
+        [Required]
+        public int RecipientId { get; set; }
+
+        [Required]
+        public string MessageString { get; set; }
     }
 }

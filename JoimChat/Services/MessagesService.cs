@@ -12,12 +12,18 @@ namespace JoimChat.Services
             _context = context;
         }
 
-        public async Task CreateMessage(Message message)
+        public async Task CreateMessage(MessageCreateModel messageModel)
         {
-            if (message == null)
+            var message = new Message()
             {
-                throw new ArgumentNullException(nameof(message));
-            }
+                DispatchTime = DateTime.UtcNow,
+                MessageString = messageModel.MessageString,
+                IsRead = false,
+                RecipientId = messageModel.RecipientId,
+                SenderId = messageModel.SenderId,
+                Sender = await _context.Users.FirstOrDefaultAsync(x => x.UserId == messageModel.SenderId),
+                Recipient = await _context.Users.FirstOrDefaultAsync(x => x.UserId == messageModel.RecipientId),
+            };
 
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();

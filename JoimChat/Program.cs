@@ -21,6 +21,7 @@ namespace JoimChat
             builder.Services.TryAddTransient<IUsersService, UsersService>();
             builder.Services.TryAddTransient<IMessagesService, MessagesService>();
             builder.Services.AddControllers();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -39,6 +40,7 @@ namespace JoimChat
             app.UseRouting();
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chatHub");
 
             app.UseAuthorization();
 
