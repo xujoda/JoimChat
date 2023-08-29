@@ -57,7 +57,7 @@ namespace JoimChat.Services
 
             var message = await _context.Messages.FirstOrDefaultAsync(x => x.MessageString == messageString);
 
-            return message ?? throw new ArgumentNullException(nameof(messageString));
+            return message;
         }
 
         public async Task<List<Message>> GetSentMessagesByUserId(int userId)

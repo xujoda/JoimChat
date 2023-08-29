@@ -32,7 +32,7 @@ namespace JoimChat.Controllers
             await _messagesService.CreateMessage(messageModel);
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", "admin2", messageModel.MessageString);
 
-            return Ok();//CreatedAtRoute(nameof(GetMessageById), new { id = message.MessageId}, message);
+            return Ok();
         }
 
         [HttpGet("get/messageId")]
